@@ -116,17 +116,17 @@
 - **그리퍼 방향(yaw):** 기본은 손목(7번 관절)을 돌리지 않고 팔 전체가 옆으로 도는 만큼만 따라 도는 방향이다.
 
   ```math
-  \psi_{\mathrm{base}} = \psi_{\mathrm{home}} + \operatorname{wrap}\!\left(\operatorname{atan2}(y_g,\, x_g) - \operatorname{atan2}(y_{\mathrm{home}},\, x_{\mathrm{home}})\right)
+  \psi_{\mathrm{base}} = \psi_{\mathrm{home}} + \mathrm{wrap}\left(\mathrm{atan2}(y_g,\, x_g) - \mathrm{atan2}(y_{\mathrm{home}},\, x_{\mathrm{home}})\right)
   ```
 
   손가락 두 개를 폭 20 mm × 두께 10 mm 사각형으로 보고, 그리퍼 y축 방향으로 중심에서 ±(벌린 폭/2 + 5 mm)에 둔다 — 잡으러 내려갈 때는 완전히 벌린 상태(±45 mm), 꽂을 때는 쥔 폭 30 mm + 벌림 12 mm(±26 mm). 다른 뚜껑 중심에서 사각형까지의 거리가 뚜껑 반지름 16 mm + 여유 6 mm보다 작으면 닿는다고 본다. 닿으면 **손가락이 그 랙의 줄과 수직이 되게**(그리퍼 x축 ∥ 랙 긴 축) 돌린다. 그리퍼는 180° 대칭이므로 덜 도는 쪽을 고른다. 그래도 닿으면 계획을 거부한다. 손목 회전을 최소화하는 이유는 7번 관절이 임피던스 제어에서 명령을 시간상수 약 1 s로 늦게 따라가기 때문이다.
 - **꽂을 구멍 — 원근 보정:** 보정 H는 뚜껑 윗면 높이의 평면에 대한 것이다. 구멍(랙 윗면)은 그보다 Δh 낮아 화면에서 카메라 연직점 C 쪽으로 당겨져 보인다(그림 2b). 이를 되돌린다.
 
   ```math
-  p = C + \bigl(H(u_r) - C\bigr)\,\frac{D + \Delta h}{D},\qquad
+  p = C + \left(H(u_r) - C\right)\,\frac{D + \Delta h}{D},\qquad
   D = f_x\, m,\qquad
   f_x = \frac{W/2}{\tan(87^\circ/2)} \approx 447\ \mathrm{px},\qquad
-  m = \sqrt{\lvert \det J_H(c) \rvert}
+  m = \sqrt{\left| \det J_H(c) \right|}
   ```
 
   f_x는 D405 가로 화각으로 구한 초점거리, m은 화면 중심의 m/px, C = H(화면 중심)이다. Δh(뚜껑 윗면 − 랙 윗면)는 자로 잰 값을 설정한다 【확인: 세션 `cap_above`】.
@@ -201,7 +201,7 @@ q ← q + J⁺e + (I − J⁺J) · 0.02 · (q_home − q)          (영공간 �
 - **정착 보정(적분):** 잡기 직전 0.5 s 동안 남은 관절 오차를 적분해 명령을 조금 더 민다(|off| ≤ 6°/관절, 최대 오차 8° 미만일 때만).
 
   ```math
-  \mathrm{off} \leftarrow \mathrm{off} + \operatorname{clip}\!\left(2.0\,(q_{\mathrm{goal}} - q)\,dt,\ \pm 4^\circ/\mathrm{s}\cdot dt\right)
+  \mathrm{off} \leftarrow \mathrm{off} + \mathrm{clip}\left(2.0\,(q_{\mathrm{goal}} - q)\,dt,\ \pm 4^\circ/\mathrm{s}\cdot dt\right)
   ```
 
   홈에서는 같은 방식(이득 1.0 s⁻¹, 2°/s, 6°)으로 맞춰 둔 보정량을 출발할 때 이어 붙여 시작점이 끊기지 않게 한다. 이 보정은 **명령(q_cmd)에 들어가 그대로 기록**되므로, 학습 행동(명령)은 처짐 보정이 포함된 값이다.
